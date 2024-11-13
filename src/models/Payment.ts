@@ -14,8 +14,7 @@ const paymentMethodSchema = new mongoose.Schema<PaymentMethod>({
 	accountNumber: String,
 	expiryDate: Date,
 	isDefault: { type: Boolean, default: false },
-	createdAt: { type: Date, default: Date.now },
-});
+},{timestamps:{createdAt:true,updatedAt:false}});
 
 const PaymentModel =
 	(mongoose.models?.PaymentMethod as mongoose.Model<PaymentMethod>) ||

@@ -12,17 +12,19 @@ export interface Address extends Document {
 	type: "billing" | "shipping";
 	createdAt: Date;
 }
-const addressSchema = new Schema<Address>({
-	user: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
-	addressLine1: String,
-	addressLine2: String,
-	city: String,
-	state: String,
-	country: String,
-	postalCode: String,
-	type: { type: String, enum: ["billing", "shipping"], default: "shipping" },
-	createdAt: { type: Date, default: Date.now },
-});
+const addressSchema = new Schema<Address>(
+	{
+		user: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
+		addressLine1: String,
+		addressLine2: String,
+		city: String,
+		state: String,
+		country: String,
+		postalCode: String,
+		type: { type: String, enum: ["billing", "shipping"], default: "shipping" },
+	},
+	{ timestamps: { createdAt: true, updatedAt: false } }
+);
 
 const AddressModel =
 	(mongoose.models?.Address as mongoose.Model<Address>) ||
