@@ -10,7 +10,7 @@ export interface User extends Document {
 	createdAt: Date;
 	updatedAt: Date;
 	userAddress?: Types.ObjectId;
-	paymentMethods?: Types.ObjectId;
+	paymentMethods?: Types.ObjectId[];
 }
 
 const userSchema = new Schema<User>(
@@ -25,10 +25,12 @@ const userSchema = new Schema<User>(
 			type: mongoose.Schema.Types.ObjectId,
 			ref: "Address",
 		},
-		paymentMethods: {
-			type: mongoose.Schema.Types.ObjectId,
-			ref: "PaymentMethod",
-		},
+		paymentMethods: [
+			{
+				type: mongoose.Schema.Types.ObjectId,
+				ref: "PaymentMethod",
+			},
+		],
 	},
 	{ timestamps: true }
 );
