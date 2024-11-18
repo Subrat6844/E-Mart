@@ -21,10 +21,12 @@ const userSchema = new Schema<User>(
 		firstName: { type: String, required: true },
 		lastName: { type: String, required: true },
 		role: { type: String, enum: ["customer", "admin"], required: true },
-		userAddress: {
-			type: mongoose.Schema.Types.ObjectId,
-			ref: "Address",
-		},
+		userAddress: [
+			{
+				type: mongoose.Schema.Types.ObjectId,
+				ref: "Address",
+			},
+		],
 		paymentMethods: [
 			{
 				type: mongoose.Schema.Types.ObjectId,
