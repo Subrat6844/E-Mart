@@ -6,7 +6,7 @@ export interface User extends Document {
 	password: string;
 	firstName: string;
 	lastName: string;
-	role: "customer" | "admin" | "seller";
+	role: "customer" | "admin";
 	createdAt: Date;
 	updatedAt: Date;
 	userAddress?: Types.ObjectId;
@@ -15,7 +15,7 @@ export interface User extends Document {
 
 const userSchema = new Schema<User>(
 	{
-		username: { type: String, unique: true, required: true },
+		username: { type: String, required: true, unique: true },
 		email: { type: String, unique: true, required: true },
 		password: { type: String, required: true },
 		firstName: { type: String, required: true },
