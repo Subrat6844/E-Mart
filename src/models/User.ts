@@ -9,6 +9,8 @@ export interface User extends Document {
 	role: "customer" | "admin";
 	createdAt: Date;
 	updatedAt: Date;
+	token?: string;
+	tokenExpiry?: Date;
 	userAddress?: Types.ObjectId;
 	paymentMethods?: Types.ObjectId[];
 }
@@ -21,6 +23,8 @@ const userSchema = new Schema<User>(
 		firstName: { type: String, required: true },
 		lastName: { type: String, required: true },
 		role: { type: String, enum: ["customer", "admin"], required: true },
+		token: String,
+		tokenExpiry: Date,
 		userAddress: [
 			{
 				type: mongoose.Schema.Types.ObjectId,
