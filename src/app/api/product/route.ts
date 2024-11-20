@@ -1,8 +1,10 @@
 import { dbConnect } from "@/lib/dbConnect";
-import UserModel from "@/models/User";
 import ProductModel from "@/models/Product";
 import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
+import CategoryModel from "@/models/Category";
+import { v2 as cloudinary } from "cloudinary";
+import { Session } from "next-auth";
 
 export async function GET(req: Request) {
 	try {
@@ -22,40 +24,69 @@ export async function GET(req: Request) {
 		);
 	}
 }
+
+cloudinary.config({
+	cloud_name: "your_cloud_name",
+	api_key: "your_api_key",
+	api_secret: "your_api_secret",
+});
 export async function POST(req: Request) {
 	try {
 		await dbConnect();
 		const { name, description, sku, category, price, images, status } =
 			await req.json();
-		const session = await getServerSession();
+		const session: Session | null = await getServerSession();
 		const isAdmin = session?.user.role === "admin";
+
 		if (!session || !isAdmin) {
 			return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
 		}
-		const isCategoryExists = await ProductModel.findOne({ name: category });
+
+		// Check if the category exists
+		let isCategoryExists = await CategoryModel.findOne({ name: category });
 		if (!isCategoryExists) {
 			return NextResponse.json(
 				{ message: "Category not found" },
 				{ status: 404 }
 			);
 		}
+		const uploadedImages = [];
+		if (images && images.length > 0) {
+			for (const image of images) {
+				try {
+					const result = await cloudinary.uploader.upload(image, {
+						folder: "products",
+					});
+					uploadedImages.push(result.secure_url);
+				} catch (error) {
+					console.error("Cloudinary upload error:", error);
+					return NextResponse.json(
+						{ message: "Error uploading images" },
+						{ status: 500 }
+					);
+				}
+			}
+		}
+
+		// Create the product
 		const product = await ProductModel.create({
 			name,
 			description,
 			sku,
 			category: isCategoryExists._id,
 			price,
-			images,
+			images: uploadedImages, // Save the uploaded image URLs
 			status,
 		});
+
 		return NextResponse.json(
-			{ message: "Product added successfully" },
+			{ message: "Product added successfully", product },
 			{ status: 200 }
 		);
-	} catch (error) {
-		console.log("Error adding product", error);
+	} catch (error: any) {
+		console.log("Error while adding product", error);
 		return NextResponse.json(
-			{ message: "Error adding product" },
+			{ message: error.message || "Error adding product" },
 			{ status: 500 }
 		);
 	}

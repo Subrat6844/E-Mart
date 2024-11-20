@@ -60,11 +60,11 @@ export async function PATCH(
 ) {
 	try {
 		await dbConnect();
-		const { name, description, sku, category, price, images, status } =
+		const { name, description, sku, category, price, status } =
 			await req.json();
 		const product = await ProductModel.findByIdAndUpdate(
 			params.id,
-			{ name, description, sku, category, price, images, status },
+			{ name, description, sku, category, price, status },
 			{ new: true }
 		);
 		if (!product) {
