@@ -10,6 +10,12 @@ export async function GET(req: Request) {
 	try {
 		await dbConnect();
 		const products = await ProductModel.find();
+		if (!products) {
+			return NextResponse.json(
+				{ message: "No Products Found" },
+				{ status: 404 }
+			);
+		}
 		return NextResponse.json(
 			{ message: "Products Fetched Successfully", products },
 			{ status: 200 }
