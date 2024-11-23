@@ -13,7 +13,7 @@ const ReviewSchema = new Schema<Review>(
 		user: { type: Schema.Types.ObjectId, ref: "User", required: true },
 		product: { type: Schema.Types.ObjectId, ref: "Product", required: true },
 		rating: { type: Number, required: true },
-		comment: { type: String },
+		comment: { type: String ,default:"" },
 	},
 	{ timestamps: { createdAt: true, updatedAt: false } }
 );
