@@ -115,6 +115,16 @@ export async function DELETE(
 				{ status: 404 }
 			);
 		}
+		const reviews = await ReviewModel.find({ product: params.productId });
+		const avgRating =
+			reviews.length > 0
+				? reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length
+				: 0;
+
+		await ProductModel.findByIdAndUpdate(params.productId, {
+			avgRating,
+			reviewCount: reviews.length,
+		});
 
 		return NextResponse.json(
 			{ message: "Review deleted successfully" },
@@ -155,6 +165,16 @@ export async function PATCH(
 				{ status: 404 }
 			);
 		}
+		const reviews = await ReviewModel.find({ product: params.productId });
+		const avgRating =
+			reviews.length > 0
+				? reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length
+				: 0;
+
+		await ProductModel.findByIdAndUpdate(params.productId, {
+			avgRating,
+			reviewCount: reviews.length,
+		});
 
 		return NextResponse.json(
 			{ message: "Review updated successfully", review },
