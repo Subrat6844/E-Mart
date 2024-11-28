@@ -1,13 +1,30 @@
-import mongoose, { Document, Schema } from "mongoose";
+import mongoose, { Document, Schema, Types } from "mongoose";
 
+// OrderItem Interface and Schema
+interface OrderItem extends Document {
+	product: Types.ObjectId;
+	quantity: number;
+	price: number;
+	total: number;
+}
+
+const OrderItemSchema = new Schema<OrderItem>({
+	product: { type: Schema.Types.ObjectId, ref: "Product", required: true },
+	quantity: { type: Number, required: true },
+	price: { type: Number, required: true },
+	total: { type: Number, required: true },
+});
+
+// Order Interface and Schema
 interface Order extends Document {
-	user: mongoose.Types.ObjectId;
+	user: Types.ObjectId;
 	status: "pending" | "shipped" | "delivered" | "cancelled";
 	paymentStatus: "paid" | "unpaid";
+	paymentProvider: string;
+	paymentTransactionId: string;
 	total: number;
-	address: mongoose.Types.ObjectId;
-	paymentMethod: mongoose.Types.ObjectId;
-	items: mongoose.Types.ObjectId[];
+	address: Types.ObjectId;
+	items: OrderItem[];
 	createdAt: Date;
 	updatedAt: Date;
 }
@@ -18,45 +35,24 @@ const OrderSchema = new Schema<Order>(
 		status: {
 			type: String,
 			enum: ["pending", "shipped", "delivered", "cancelled"],
-			required: true,
+			default: "pending",
 		},
-		paymentStatus: { type: String, enum: ["paid", "unpaid"], required: true },
+		paymentStatus: {
+			type: String,
+			enum: ["paid", "unpaid"],
+			default: "unpaid",
+		},
+		paymentProvider: { type: String }, // e.g., Stripe, PayPal
+		paymentTransactionId: { type: String }, // ID from the payment gateway
 		total: { type: Number, required: true },
 		address: { type: Schema.Types.ObjectId, ref: "Address", required: true },
-		paymentMethod: {
-			type: Schema.Types.ObjectId,
-			ref: "PaymentMethod",
-			required: true,
-			default: null,
-		},
-		items: { 
-			type: [{ type: Schema.Types.ObjectId, ref: "OrderItem" }], 
-			validate: [(val: mongoose.Types.ObjectId[]) => val.length > 0, "Order must contain at least one item."] 
-		},
+		items: [OrderItemSchema], // Embedded OrderItem schema
 	},
 	{ timestamps: true }
 );
 
+// Models
 const OrderModel =
-	(mongoose.models?.Order as mongoose.Model<Order>) ||
-	mongoose.model<Order>("Order", OrderSchema);
+	mongoose.models?.Order || mongoose.model<Order>("Order", OrderSchema);
+
 export default OrderModel;
-interface OrderItem extends Document {
-	order: mongoose.Types.ObjectId;
-	product: mongoose.Types.ObjectId;
-	quantity: number;
-	price: number;
-	total: number;
-}
-
-const OrderItemSchema = new Schema<OrderItem>({
-	order: { type: Schema.Types.ObjectId, ref: "Order", required: true },
-	product: { type: Schema.Types.ObjectId, ref: "Product", required: true },
-	quantity: { type: Number, required: true },
-	price: { type: Number, required: true },
-	total: { type: Number, required: true },
-});
-
-export const OrderItem =
-	(mongoose.models?.OrderItem as mongoose.Model<OrderItem>) ||
-	mongoose.model<OrderItem>("OrderItem", OrderItemSchema);

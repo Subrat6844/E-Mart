@@ -1,42 +1,41 @@
 import { dbConnect } from "@/lib/dbConnect";
 import { NextResponse } from "next/server";
-import OrderModel, { OrderItem } from "@/models/Order";
+import OrderModel from "@/models/Order";
 import { getServerSession } from "next-auth";
-
 export async function GET(
 	req: Request,
 	{ params }: { params: { id: string } }
 ) {
 	try {
+		// Connect to the database
 		await dbConnect();
-		const session = await getServerSession();
 
+		// Get session (check user authentication)
+		const session = await getServerSession();
 		if (!session || !session.user) {
 			return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
 		}
 
-		const order = await OrderModel.findById(params.id)
+		// Fetch the order by ID for the authenticated user
+		const order = await OrderModel.findOne({
+			_id: params.id,
+			user: session.user._id,
+		})
 			.populate("user")
-			.populate("items")
 			.populate("address")
-			.populate("paymentMethod");
+			.populate("items");
 
 		if (!order) {
 			return NextResponse.json({ message: "Order not found" }, { status: 404 });
 		}
-		if (
-			order.user.toString() !== session.user._id &&
-			session.user.role !== "admin"
-		) {
-			return NextResponse.json({ message: "Forbidden" }, { status: 403 });
-		}
 
+		// Send the order response
 		return NextResponse.json(
 			{ message: "Order fetched successfully", order },
 			{ status: 200 }
 		);
 	} catch (error) {
-		console.error("Error fetching order", error);
+		console.error("Error fetching order by ID", error);
 		return NextResponse.json(
 			{ message: "Error fetching order" },
 			{ status: 500 }
@@ -45,63 +44,105 @@ export async function GET(
 }
 
 export async function PATCH(
-    req: Request,
-    { params }: { params: { id: string } }
+	req: Request,
+	{ params }: { params: { id: string } }
 ) {
-    try {
-        await dbConnect();
-        const session = await getServerSession();
-        if (!session || session.user.role !== "admin") {
-            return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
-        }
+	try {
+		// Connect to the database
+		await dbConnect();
 
-        const { status }: { status: "pending" | "shipped" | "delivered" | "cancelled" } = await req.json();
+		// Get session (check user authentication)
+		const session = await getServerSession();
+		if (!session || !session.user) {
+			return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+		}
 
-        const updatedOrder = await OrderModel.findByIdAndUpdate(
-            params.id,
-            { status },
-            { new: true }
-        );
+		// Parse the request body
+		const {
+			status,
+			paymentStatus,
+		}: { status?: string; paymentStatus?: string } = await req.json();
 
-        if (!updatedOrder) {
-            return NextResponse.json({ message: "Order not found" }, { status: 404 });
-        }
+		// Validate the order status if provided
+		const allowedStatuses = ["pending", "shipped", "delivered", "cancelled"];
+		if (status && !allowedStatuses.includes(status)) {
+			return NextResponse.json(
+				{ message: "Invalid order status" },
+				{ status: 400 }
+			);
+		}
 
-        return NextResponse.json(
-            { message: "Order status updated successfully", updatedOrder },
-            { status: 200 }
-        );
-    } catch (error) {
-        console.error("Error updating order:", error);
-        return NextResponse.json({ message: "Error updating order" }, { status: 500 });
-    }
+		// Find the order by ID
+		const order = await OrderModel.findOne({
+			_id: params.id,
+			user: session.user._id,
+		});
+
+		if (!order) {
+			return NextResponse.json({ message: "Order not found" }, { status: 404 });
+		}
+		if (order.status === "delivered" || order.status === "cancelled") {
+			return NextResponse.json(
+				{
+					message: `Order cannot be cancelled as it has already been ${order.status}`,
+				},
+				{ status: 400 }
+			);
+		}
+		// Update the order status or payment status
+		if (status) order.status = status;
+		if (paymentStatus) order.paymentStatus = paymentStatus;
+
+		await order.save(); // Save the updated order
+
+		// Send the updated order response
+		return NextResponse.json(
+			{ message: "Order updated successfully", order },
+			{ status: 200 }
+		);
+	} catch (error) {
+		console.error("Error updating order:", error);
+		return NextResponse.json(
+			{ message: "Error updating order" },
+			{ status: 500 }
+		);
+	}
 }
 
 export async function DELETE(
-    req: Request,
-    { params }: { params: { id: string } }
+	req: Request,
+	{ params }: { params: { id: string } }
 ) {
-    try {
-        await dbConnect();
-        const session = await getServerSession();
-        if (!session || session.user.role !== "admin") {
-            return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
-        }
+	try {
+		// Connect to the database
+		await dbConnect();
 
-        const deletedOrder = await OrderModel.findByIdAndDelete(params.id);
+		// Get session (check user authentication)
+		const session = await getServerSession();
+		if (!session || session.user.role !== "admin") {
+			return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+		}
 
-        if (!deletedOrder) {
-            return NextResponse.json({ message: "Order not found" }, { status: 404 });
-        }
+		// Find the order by ID
+		const order = await OrderModel.findOneAndDelete({
+			_id: params.id,
+			user: session.user._id,
+		});
 
-        // Cleanup associated OrderItems
-        await OrderItem.deleteMany({ order: deletedOrder._id });
-        return NextResponse.json(
-            { message: "Order deleted successfully" },
-            { status: 200 }
-        );
-    } catch (error) {
-        console.error("Error deleting order:", error);
-        return NextResponse.json({ message: "Error deleting order" }, { status: 500 });
-    }
+		if (!order) {
+			return NextResponse.json({ message: "Order not found" }, { status: 404 });
+		}
+
+		// Send the response that the order was deleted
+		return NextResponse.json(
+			{ message: "Order deleted successfully" },
+			{ status: 200 }
+		);
+	} catch (error) {
+		console.error("Error deleting order:", error);
+		return NextResponse.json(
+			{ message: "Error deleting order" },
+			{ status: 500 }
+		);
+	}
 }

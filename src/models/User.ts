@@ -31,12 +31,6 @@ const userSchema = new Schema<User>(
 				ref: "Address",
 			},
 		],
-		paymentMethods: [
-			{
-				type: mongoose.Schema.Types.ObjectId,
-				ref: "PaymentMethod",
-			},
-		],
 	},
 	{ timestamps: true }
 );
