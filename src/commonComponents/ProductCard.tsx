@@ -3,7 +3,7 @@ import React from "react";
 
 export default function ProductCard({ product }: any) {
 	return (
-		<div>
+		<div >
 			<div
 				key={product.id}
 				className="bg-white dark:bg-gray-800 rounded-lg overflow-hidden shadow-lg transition-transform hover:scale-105"

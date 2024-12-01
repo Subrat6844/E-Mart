@@ -2,6 +2,7 @@ import { dbConnect } from "@/lib/dbConnect";
 import UserModel from "@/models/User";
 import ProductModel from "@/models/Product";
 import { NextRequest, NextResponse } from "next/server";
+import { getServerSession } from "next-auth";
 export async function GET(
 	req: NextRequest,
 	{ params }: { params: { id: string } }
@@ -34,6 +35,10 @@ export async function DELETE(
 ) {
 	try {
 		await dbConnect();
+		const session = await getServerSession();
+		if (!session || !session.user.role === "admin") {
+			return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+		}
 		const product = await ProductModel.findByIdAndDelete(params.id);
 		if (!product) {
 			return NextResponse.json(
@@ -60,8 +65,12 @@ export async function PATCH(
 ) {
 	try {
 		await dbConnect();
-		const { name, description, sku, category, price, status } =
+		const { name, description, sku, category, price, status, size } =
 			await req.json();
+		const session = await getServerSession();
+		if (!session || !session.user.role === "admin") {
+			return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+		}
 		const product = await ProductModel.findByIdAndUpdate(
 			params.id,
 			{ name, description, sku, category, price, status },

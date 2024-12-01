@@ -36,26 +36,60 @@ cloudinary.config({
 	api_key: process.env.CLOUDINARY_API_KEY,
 	api_secret: process.env.CLOUDINARY_API_SECRET,
 });
+
 export async function POST(req: Request) {
 	try {
 		await dbConnect();
-		const { name, description, sku, category, price, images, status } =
+
+		const { name, description, sku, category, price, images, status, size } =
 			await req.json();
+
+		// Get the current user session
 		const session: Session | null = await getServerSession();
 		const isAdmin = session?.user.role === "admin";
 
+		// Authorization check
 		if (!session || !isAdmin) {
 			return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
 		}
 
+		// Validate required fields
+		if (!name || !sku || !category || !price || !status) {
+			return NextResponse.json(
+				{ message: "Missing required fields" },
+				{ status: 400 }
+			);
+		}
+
 		// Check if the category exists
-		let isCategoryExists = await CategoryModel.findOne({ name: category });
+		const isCategoryExists = await CategoryModel.findOne({ name: category });
 		if (!isCategoryExists) {
 			return NextResponse.json(
 				{ message: "Category not found" },
 				{ status: 404 }
 			);
 		}
+
+		// Validate `status`
+		if (!["active", "inactive"].includes(status)) {
+			return NextResponse.json(
+				{ message: "Invalid status value" },
+				{ status: 400 }
+			);
+		}
+
+		// Validate `size` if provided
+		if (
+			size &&
+			(!Array.isArray(size) || size.some((s) => typeof s !== "string"))
+		) {
+			return NextResponse.json(
+				{ message: "Invalid size format, expected an array of strings" },
+				{ status: 400 }
+			);
+		}
+
+		// Handle image uploads
 		const uploadedImages = [];
 		if (images && images.length > 0) {
 			for (const image of images) {
@@ -83,6 +117,7 @@ export async function POST(req: Request) {
 			price,
 			images: uploadedImages, // Save the uploaded image URLs
 			status,
+			size, // Include size field in product creation
 		});
 
 		return NextResponse.json(
@@ -90,7 +125,7 @@ export async function POST(req: Request) {
 			{ status: 200 }
 		);
 	} catch (error: any) {
-		console.log("Error while adding product", error);
+		console.error("Error while adding product:", error);
 		return NextResponse.json(
 			{ message: error.message || "Error adding product" },
 			{ status: 500 }

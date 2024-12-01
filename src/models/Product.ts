@@ -9,9 +9,13 @@ interface Product extends Document {
 	images?: string[];
 	status: "active" | "inactive";
 	avgRating: number;
-	reviewCount: number; 
+	reviewCount: number;
 	createdAt: Date;
 	updatedAt: Date;
+	variants: {
+		size: string;
+		stock: number;
+	}[];
 }
 
 const ProductSchema = new Schema<Product>(
@@ -25,6 +29,12 @@ const ProductSchema = new Schema<Product>(
 		status: { type: String, enum: ["active", "inactive"], required: true },
 		avgRating: { type: Number, default: 0 }, // Default value set to 0
 		reviewCount: { type: Number, default: 0 }, // Default value set to 0
+		variants: [
+			{
+				size: { type: String, required: true },
+				stock: { type: Number, default: 0 },
+			},
+		],
 	},
 	{ timestamps: true }
 );
