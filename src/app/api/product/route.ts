@@ -9,7 +9,7 @@ import { Session } from "next-auth";
 export async function GET(req: Request) {
 	try {
 		await dbConnect();
-		const products = await ProductModel.find();
+		const products = await ProductModel.find().populate("category");
 		if (!products) {
 			return NextResponse.json(
 				{ message: "No Products Found" },
