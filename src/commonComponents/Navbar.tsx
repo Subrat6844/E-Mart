@@ -1,15 +1,18 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Menu, Moon, Search, ShoppingBag, Sun, X } from "lucide-react";
+import { Menu, Moon, Search, ShoppingBag, Sun, UserPen, X } from "lucide-react";
+import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
 export default function Navbar() {
+	const { data: session } = useSession();
 	const [isMenuOpen, setIsMenuOpen] = useState(false);
 	const [isSearchOpen, setIsSearchOpen] = useState(false);
 	const [isDarkMode, setIsDarkMode] = useState(false);
-
+	const isAuthenticated = session?.user;
+	const isAdmin = session?.user?.role === "admin";
 	useEffect(() => {
 		if (isDarkMode) {
 			document.documentElement.classList.add("dark");
@@ -44,12 +47,40 @@ export default function Navbar() {
 						>
 							About
 						</Link>
-						<Link
-							href="/contact"
-							className="text-gray-600 dark:text-gray-300 hover:text-purple-600 dark:hover:text-purple-400"
-						>
-							Contact
-						</Link>
+						{!isAuthenticated && (
+							<>
+								<Link
+									href="/signup"
+									className="text-gray-600 dark:text-gray-300 hover:text-purple-600 dark:hover:text-purple-400"
+								>
+									Sign Up
+								</Link>
+								<Link
+									href="/login"
+									className="text-gray-600 dark:text-gray-300 hover:text-purple-600 dark:hover:text-purple-400"
+								>
+									Login
+								</Link>
+							</>
+						)}
+						{isAuthenticated && (
+							<>
+								<Link
+									href="/orders"
+									className="text-gray-600 dark:text-gray-300 hover:text-purple-600 dark:hover:text-purple-400"
+								>
+									My Orders
+								</Link>
+							</>
+						)}
+						{isAdmin && (
+							<Link
+								href="/dashboard"
+								className="text-gray-600 dark:text-gray-300 hover:text-purple-600 dark:hover:text-purple-400"
+							>
+								Dashboard
+							</Link>
+						)}
 					</div>
 					<div className="flex items-center space-x-1">
 						<Button
@@ -61,16 +92,6 @@ export default function Navbar() {
 							<Search className="h-5 w-5" />
 							<span className="sr-only">Toggle Search</span>
 						</Button>
-						<Link href={"/cart"}>
-							<Button
-								variant="ghost"
-								size="icon"
-								className="text-gray-600 dark:text-gray-300 hover:text-purple-600 dark:hover:text-purple-400"
-							>
-								<ShoppingBag className="h-5 w-5" />
-								<span className="sr-only">Cart</span>
-							</Button>
-						</Link>
 						<Button
 							variant="ghost"
 							size="icon"
@@ -84,6 +105,28 @@ export default function Navbar() {
 							)}
 							<span className="sr-only">Toggle Dark Mode</span>
 						</Button>
+						<Link href={"/cart"}>
+							<Button
+								variant="ghost"
+								size="icon"
+								className="text-gray-600 dark:text-gray-300 hover:text-purple-600 dark:hover:text-purple-400"
+							>
+								<ShoppingBag className="h-5 w-5" />
+								<span className="sr-only">Cart</span>
+							</Button>
+						</Link>
+						{isAuthenticated && (
+							<Link href={"/user-profile"}>
+								<Button
+									variant="ghost"
+									size="icon"
+									className="text-gray-600 dark:text-gray-300 hover:text-purple-600 dark:hover:text-purple-400"
+								>
+									<UserPen className="h-5 w-5" />
+									<span className="sr-only">Profile</span>
+								</Button>
+							</Link>
+						)}
 						<Button
 							variant="ghost"
 							size="icon"
