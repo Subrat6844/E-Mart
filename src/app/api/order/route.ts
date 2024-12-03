@@ -52,7 +52,7 @@ export async function POST(req: Request) {
 			paymentProvider,
 			paymentTransactionId,
 		}: {
-			items: { product: string; quantity: number }[];
+			items: { product: string; quantity: number; size?: string }[];
 			address: string;
 			paymentProvider: string;
 			paymentTransactionId: string;
