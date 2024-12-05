@@ -11,15 +11,17 @@ export async function GET(req: Request) {
 		await dbConnect();
 		// Get session (check user authentication)
 		const session = await getServerSession();
-		if (!session || !session.user) {
+		if (!session || session.user.role !== "customer") {
 			return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
 		}
 
 		// Fetch orders for the authenticated user
 		const orders = await OrderModel.find({ user: session.user._id })
-			.populate("user")
+			.populate({
+				path: "items.product", // Populate the product in items
+				select: "name price images", // Choose which fields to include from the product
+			})
 			.populate("address");
-
 		// Send the orders response
 		return NextResponse.json(
 			{ message: "Orders fetched successfully", orders },
