@@ -1,25 +1,41 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { useCart } from "@/context/CartContext";
 import { Menu, Moon, Search, ShoppingBag, Sun, UserPen, X } from "lucide-react";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-
 export default function Navbar() {
 	const { data: session } = useSession();
 	const [isMenuOpen, setIsMenuOpen] = useState(false);
 	const [isSearchOpen, setIsSearchOpen] = useState(false);
-	const [isDarkMode, setIsDarkMode] = useState(false);
 	const isAuthenticated = session?.user;
 	const isAdmin = session?.user?.role === "admin";
+	const { cart } = useCart();
+	const getTotalItems = () => {
+		return cart.items.reduce((total, item) => total + item.quantity, 0);
+	};
+	const [isDarkMode, setIsDarkMode] = useState(false); // Default to light mode
+	const [hydrated, setHydrated] = useState(false); // Prevent hydration mismatch
+
 	useEffect(() => {
-		if (isDarkMode) {
-			document.documentElement.classList.add("dark");
-		} else {
-			document.documentElement.classList.remove("dark");
+		const storedDarkMode = localStorage.getItem("darkMode");
+		setIsDarkMode(storedDarkMode ? JSON.parse(storedDarkMode) : false);
+		setHydrated(true);
+	}, []);
+
+	useEffect(() => {
+		if (hydrated) {
+			if (isDarkMode) {
+				document.documentElement.classList.add("dark");
+			} else {
+				document.documentElement.classList.remove("dark");
+			}
+			localStorage.setItem("darkMode", JSON.stringify(isDarkMode));
 		}
-	}, [isDarkMode]);
+	}, [isDarkMode, hydrated]);
+
 	return (
 		<nav className="bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800">
 			<div className="container mx-auto px-4 py-4">
@@ -109,10 +125,15 @@ export default function Navbar() {
 							<Button
 								variant="ghost"
 								size="icon"
-								className="text-gray-600 dark:text-gray-300 hover:text-purple-600 dark:hover:text-purple-400"
+								className="text-gray-600 dark:text-gray-300 hover:text-purple-600 dark:hover:text-purple-400 relative"
 							>
 								<ShoppingBag className="h-5 w-5" />
 								<span className="sr-only">Cart</span>
+								{getTotalItems() > 0 && (
+									<span className="absolute -top-1 -right-1 bg-purple-600 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+										{getTotalItems()}
+									</span>
+								)}
 							</Button>
 						</Link>
 						{isAuthenticated && (

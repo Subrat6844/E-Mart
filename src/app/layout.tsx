@@ -36,13 +36,14 @@ export default function RootLayout({
 			>
 				<AuthProvider>
 					<OrderProvider>
-						<ProductProvider>
-							<CartProvider>
-								<Navbar />
-								{children}
-								<Toaster />
-							</CartProvider>
-						</ProductProvider>
+						
+					<ProductProvider>
+						<CartProvider>
+							<Navbar />
+							{children}
+							<Toaster />
+						</CartProvider>
+					</ProductProvider>
 					</OrderProvider>
 				</AuthProvider>
 			</body>

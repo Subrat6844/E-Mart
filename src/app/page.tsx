@@ -5,41 +5,6 @@ import { Input } from "@/components/ui/input";
 import ProductCard from "@/commonComponents/ProductCard";
 import { useProduct } from "../context/ProductContext";
 
-// const products = [
-// 	{
-// 		id: 1,
-// 		name: "Leather Weekender Bag",
-// 		price: 299.99,
-// 		images: [
-// 			"https://images.unsplash.com/photo-1731370963535-aa6e57ed40f6?q=80&w=1884&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D0",
-// 		],
-// 	},
-// 	{
-// 		id: 2,
-// 		name: "Cashmere Sweater",
-// 		price: 199.99,
-// 		images: [
-// 			"https://images.unsplash.com/photo-1731370963535-aa6e57ed40f6?q=80&w=1884&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D0",
-// 		],
-// 	},
-// 	{
-// 		id: 3,
-// 		name: "Automatic Chronograph Watch",
-// 		price: 1299.99,
-// 		images: [
-// 			"https://images.unsplash.com/photo-1731370963535-aa6e57ed40f6?q=80&w=1884&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D0",
-// 		],
-// 	},
-// 	{
-// 		id: 4,
-// 		name: "Italian Leather Shoes",
-// 		price: 349.99,
-// 		images: [
-// 			"https://images.unsplash.com/photo-1542291026-7eec264c27ff?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-// 		],
-// 	},
-// ];
-
 export default function Home() {
 	const {products} = useProduct();	
 	return (
