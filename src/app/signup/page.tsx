@@ -17,12 +17,11 @@ import {
 	Card,
 	CardContent,
 	CardDescription,
-	CardFooter,
 	CardHeader,
 	CardTitle,
 } from "@/components/ui/card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 
 const signupSchema = z
 	.object({
@@ -38,7 +37,7 @@ const signupSchema = z
 
 type SignupForm = z.infer<typeof signupSchema>;
 
-export default function Signup({ onSuccess }: { onSuccess: () => void }) {
+export default function Signup() {
 	const [error, setError] = useState<string | null>(null);
 
 	const form = useForm<SignupForm>({

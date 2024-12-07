@@ -12,7 +12,7 @@ export async function middleware(request: NextRequest) {
 
 	// Define routes for public and protected access
 	const publicRoutes = ["/", "/login", "/signup"];
-	const protectedRoutes = ["/dashboard"];
+	const protectedRoutes = ["/admin"];
 
 	// Redirect authenticated users away from public routes
 	if (token && publicRoutes.some((route) => pathname.startsWith(route))) {

@@ -16,7 +16,8 @@ const loginSchema = z.object({
 
 type LoginForm = z.infer<typeof loginSchema>
 
-export default function Login({ onSuccess }: { onSuccess: () => void }) {
+
+export default function Login() {
   const [error, setError] = useState<string | null>(null)
   const form = useForm<LoginForm>({
     resolver: zodResolver(loginSchema),
