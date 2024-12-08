@@ -5,8 +5,10 @@ import { useCart } from "@/context/CartContext";
 import { Menu, Moon, Search, ShoppingBag, Sun, UserPen, X } from "lucide-react";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 export default function Navbar() {
+	const pathname = usePathname()
 	const { data: session } = useSession();
 	const [isMenuOpen, setIsMenuOpen] = useState(false);
 	const [isSearchOpen, setIsSearchOpen] = useState(false);
@@ -35,14 +37,15 @@ export default function Navbar() {
 			localStorage.setItem("darkMode", JSON.stringify(isDarkMode));
 		}
 	}, [isDarkMode, hydrated]);
-
+	if (pathname.startsWith("/dashboard")) {
+		return null
+	}
 	return (
 		<nav className="bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800">
 			<div className="container mx-auto px-4 py-4">
 				<div className="flex justify-between items-center">
 					<Link href="/" className="text-2xl font-bold">
-						<span className="text-purple-600 dark:text-purple-400">LUXE</span>
-						<span className="text-gray-900 dark:text-gray-100">SHOP</span>
+						<span className="text-gray-900 dark:text-gray-100"><svg xmlns="http://www.w3.org/2000/svg" width="90" height="40" fill="none" viewBox="0 0 176 40"><path fill={!isDarkMode?"#283841":"#fff"} fill-rule="evenodd" d="M15 28a5 5 0 0 1-5-5V0H0v23c0 8.284 6.716 15 15 15h11V28H15ZM45 10a9 9 0 1 0 0 18 9 9 0 0 0 0-18Zm-19 9C26 8.507 34.507 0 45 0s19 8.507 19 19-8.507 19-19 19-19-8.507-19-19ZM153 10a9 9 0 0 0-9 9 9 9 0 0 0 9 9 9 9 0 0 0 9-9 9 9 0 0 0-9-9Zm-19 9c0-10.493 8.507-19 19-19s19 8.507 19 19-8.507 19-19 19-19-8.507-19-19ZM85 0C74.507 0 66 8.507 66 19s8.507 19 19 19h28c1.969 0 3.868-.3 5.654-.856L124 40l5.768-10.804A19.007 19.007 0 0 0 132 20.261V19c0-10.493-8.507-19-19-19H85Zm37 19a9 9 0 0 0-9-9H85a9 9 0 1 0 0 18h28a9 9 0 0 0 9-8.93V19Z" clip-rule="evenodd"></path><path fill={!isDarkMode?"#283841":"#fff"} d="M176 2.5a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0Z"></path></svg></span>
 					</Link>
 					<div className="hidden md:flex space-x-8">
 						<Link

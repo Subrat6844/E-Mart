@@ -9,10 +9,12 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Minus, Plus, Trash2 } from "lucide-react";
 import CartSkeleton from "./loading";
 import { EmptyCart } from "@/components/EmptyCart";
+import { useRouter } from "next/navigation";
 
 export default function CartPage() {
 	const { cart, dispatch } = useCart();
 	const [isLoading, setIsLoading] = useState(true);
+	const router = useRouter()
 
 	useEffect(() => {
 		// Simulate loading time
@@ -141,7 +143,7 @@ export default function CartPage() {
 								<span>Total:</span>
 								<span>₹{totalPrice.toFixed(2)}</span>
 							</div>
-							<Button className="w-full mt-4">Proceed to Checkout</Button>
+							<Button onClick={()=> router.push("/checkout") } className="w-full mt-4">Proceed to Checkout</Button>
 						</CardContent>
 					</Card>
 				</div>
