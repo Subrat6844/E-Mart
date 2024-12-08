@@ -1,9 +1,10 @@
 import { Button } from "@/components/ui/button";
+import { Product } from "@/context/ProductContext";
 import { Star } from "lucide-react";
 import Link from "next/link";
 import React from "react";
 
-export default function ProductCard({ product }: any) {
+export default function ProductCard({ product }: {product:Product}) {
 	return (
 		<div>
 			<Link href={`/products/${product._id}`}>
