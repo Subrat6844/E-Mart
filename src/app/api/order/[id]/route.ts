@@ -75,7 +75,6 @@ export async function PATCH(
 		// Find the order by ID
 		const order = await OrderModel.findOne({
 			_id: params.id,
-			user: session.user._id,
 		});
 
 		if (!order) {
