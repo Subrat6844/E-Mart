@@ -30,6 +30,24 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+import { MoreHorizontal, Pencil, Trash } from 'lucide-react'
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog"
 
 const categorySchema = z.object({
   name: z.string().min(2, {
@@ -40,7 +58,7 @@ const categorySchema = z.object({
 })
 
 // Dummy data for existing categories
-const existingCategories = [
+const initialCategories = [
   { id: '1', name: 'Electronics', description: 'Electronic devices and accessories', parentCategory: null },
   { id: '2', name: 'Clothing', description: 'Apparel and fashion items', parentCategory: null },
   { id: '3', name: 'Books', description: 'Physical and digital books', parentCategory: null },
@@ -48,7 +66,8 @@ const existingCategories = [
 ]
 
 export default function CategoriesPage() {
-  const [categories, setCategories] = useState(existingCategories)
+  const [categories, setCategories] = useState(initialCategories)
+  const [editingCategory, setEditingCategory] = useState<typeof initialCategories[0] | null>(null)
 
   const form = useForm<z.infer<typeof categorySchema>>({
     resolver: zodResolver(categorySchema),
@@ -60,17 +79,34 @@ export default function CategoriesPage() {
   })
 
   function onSubmit(values: z.infer<typeof categorySchema>) {
-    console.log(values)
-    // Here you would typically send this data to your API
-    const newCategory = {
-      id: (categories.length + 1).toString(),
-      name: values.name,
-      description: values.description || '',
-      parentCategory: values.parentCategory || null,
+    if (editingCategory) {
+      setCategories(categories.map(cat => 
+        cat.id === editingCategory.id ? { ...cat, ...values } : cat
+      ))
+      setEditingCategory(null)
+    } else {
+      const newCategory = {
+        id: (categories.length + 1).toString(),
+        name: values.name,
+        description: values.description || '',
+        parentCategory: values.parentCategory || null,
+      }
+      setCategories([...categories, newCategory])
     }
-    setCategories([...categories, newCategory])
-    alert('Category added successfully!')
     form.reset()
+  }
+
+  const handleEditCategory = (category: typeof initialCategories[0]) => {
+    setEditingCategory(category)
+    form.reset({
+      name: category.name,
+      description: category.description,
+      parentCategory: category.parentCategory || undefined,
+    })
+  }
+
+  const handleDeleteCategory = (id: string) => {
+    setCategories(categories.filter(cat => cat.id !== id))
   }
 
   return (
@@ -85,6 +121,7 @@ export default function CategoriesPage() {
               <TableHead>Name</TableHead>
               <TableHead>Description</TableHead>
               <TableHead>Parent Category</TableHead>
+              <TableHead className="text-right">Actions</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -97,13 +134,37 @@ export default function CategoriesPage() {
                     ? categories.find((c) => c.id === category.parentCategory)?.name
                     : 'None'}
                 </TableCell>
+                <TableCell className="text-right">
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button variant="ghost" className="h-8 w-8 p-0">
+                        <span className="sr-only">Open menu</span>
+                        <MoreHorizontal className="h-4 w-4" />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end">
+                      <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                      <DropdownMenuItem onClick={() => handleEditCategory(category)}>
+                        <Pencil className="mr-2 h-4 w-4" />
+                        <span>Edit</span>
+                      </DropdownMenuItem>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem onClick={() => handleDeleteCategory(category.id)}>
+                        <Trash className="mr-2 h-4 w-4" />
+                        <span>Delete</span>
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </TableCell>
               </TableRow>
             ))}
           </TableBody>
         </Table>
       </div>
       <div className="mt-8">
-        <h3 className="text-2xl font-bold tracking-tight mb-4">Add New Category</h3>
+        <h3 className="text-2xl font-bold tracking-tight mb-4">
+          {editingCategory ? 'Edit Category' : 'Add New Category'}
+        </h3>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
             <FormField
@@ -161,7 +222,17 @@ export default function CategoriesPage() {
                 </FormItem>
               )}
             />
-            <Button type="submit">Add Category</Button>
+            <Button type="submit">
+              {editingCategory ? 'Update Category' : 'Add Category'}
+            </Button>
+            {editingCategory && (
+              <Button type="button" variant="outline" onClick={() => {
+                setEditingCategory(null)
+                form.reset()
+              }}>
+                Cancel
+              </Button>
+            )}
           </form>
         </Form>
       </div>

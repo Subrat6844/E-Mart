@@ -17,7 +17,7 @@ export interface OrderItem {
 
 export interface Address {
 	_id: string;
-	user: string;
+	user?: string;
 	addressLine1: string;
 	addressLine2?: string;
 	city: string;
