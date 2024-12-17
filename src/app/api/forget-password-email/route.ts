@@ -3,7 +3,7 @@ import crypto from "crypto";
 import { dbConnect } from "@/lib/dbConnect"; // Database connection helper
 import UserModel from "@/models/User"; // User model
 
-export default async function POST(req: Request) {
+export async function POST(req: Request) {
 	const { email } = await req.json();
 
 	if (!email) {
