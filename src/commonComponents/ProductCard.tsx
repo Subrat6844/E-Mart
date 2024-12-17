@@ -1,49 +1,61 @@
-import { Button } from "@/components/ui/button";
-import { Product } from "@/context/ProductContext";
-import { Star } from "lucide-react";
-import Link from "next/link";
-import React from "react";
+import Image from 'next/image'
+import { Star, ShoppingCart } from 'lucide-react'
+import { Button } from "@/components/ui/button"
+import { Badge } from "@/components/ui/badge"
+import { Card, CardContent, CardFooter } from "@/components/ui/card"
+import { Product } from '@/context/ProductContext'
 
-export default function ProductCard({ product }: {product:Product}) {
-	return (
-		<div>
-			<Link href={`/products/${product._id}`}>
-				<div
-					key={product._id}
-					className="bg-white dark:bg-gray-800 rounded-lg overflow-hidden shadow-lg transition-transform hover:scale-105"
-				>
-					<img
-						src={product.images[0]}
-						alt={product.name}
-						className="w-full h-64 object-cover"
-					/>
-					<div className="p-4">
-						<h3 className="text-lg font-semibold mb-2 text-gray-900 dark:text-gray-100">
-							{product.name}
-						</h3>
-						<p className="text-purple-600 dark:text-purple-400 font-bold">₹{product.price.toFixed(2)}</p>
-						<p className="flex">
-						{[...Array(5)].map((_, i) => (
-							<Star
-								key={i}
-								className={`w-5 h-5 ${
-									i < Math.floor(product.avgRating)
-										? "text-yellow-400 fill-current"
-										: "text-gray-300"
-								}`}
-							/>
-						))}
-						{`(${product.reviewCount})`}
-						</p>
-						<Button
-							disabled={!product.status}
-							className="mt-4 w-full bg-purple-600 hover:bg-purple-700 text-white dark:bg-purple-700 dark:hover:bg-purple-600"
-						>
-							Add to Cart
-						</Button>
-					</div>
-				</div>
-			</Link>
-		</div>
-	);
+
+export default function ProductCard({ product }: { product: Product }) {
+  const { name, description, price, images, category, status, avgRating, reviewCount, variants } = product
+
+  const isOutOfStock = variants.every(v => v.stock === 0)
+
+  return (
+    <Card className="overflow-hidden transition-all duration-300 hover:shadow-lg">
+      <div className="relative aspect-square overflow-hidden">
+        <Image
+          src={images[0] || "/placeholder.svg"}
+          alt={name}
+          layout="fill"
+          objectFit="cover"
+          className="transition-transform duration-300 hover:scale-105"
+        />
+        <div className="absolute top-2 left-2 flex gap-2">
+          <Badge variant={status === "active" ? "default" : "secondary"}>
+            {status}
+          </Badge>
+          {isOutOfStock && (
+            <Badge variant="destructive">Out of Stock</Badge>
+          )}
+        </div>
+      </div>
+      <CardContent className="p-4">
+        <div className="text-sm text-muted-foreground mb-2">{category.name}</div>
+        <h2 className="text-xl font-semibold text-foreground mb-2 line-clamp-1">{name}</h2>
+        <p className="text-sm text-muted-foreground mb-4 line-clamp-2">{description}</p>
+        <div className="flex justify-between items-center mb-4">
+          <span className="text-2xl font-bold text-foreground">${price.toFixed(2)}</span>
+          <div className="flex items-center">
+            {[...Array(5)].map((_, i) => (
+              <Star
+                key={i}
+                className={`w-4 h-4 ${
+                  i < Math.floor(avgRating) ? 'text-yellow-400 fill-current' : 'text-gray-300'
+                }`}
+              />
+            ))}
+            <span className="ml-2 text-sm text-muted-foreground">({reviewCount})</span>
+          </div>
+        </div>
+      </CardContent>
+      <CardFooter className="p-4 pt-0">
+        <Button className="w-full" disabled={isOutOfStock}>
+          <ShoppingCart className="w-4 h-4 mr-2" />
+          {isOutOfStock ? "Out of Stock" : "Add to Cart"}
+        </Button>
+      </CardFooter>
+    </Card>
+  )
 }
+
