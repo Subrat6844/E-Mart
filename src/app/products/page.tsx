@@ -17,7 +17,6 @@ import { FilterModal } from "@/components/FilterModel"
 
 const categories = ["All", "Shoes", "Clothing", "Accessories", "Bags"]
 const sortOptions = ["Default", "Price: Low to High", "Price: High to Low"]
-
 export default function ProductListing() {
   const { products } = useProduct()
   const [searchTerm, setSearchTerm] = useState("")

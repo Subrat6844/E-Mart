@@ -147,7 +147,7 @@ export default function Navbar() {
 							</Button>
 						</Link>
 
-						{!isAuthenticated && (
+						{isAuthenticated && (
 							<DropdownMenu>
 								<DropdownMenuTrigger asChild>
 									<Button

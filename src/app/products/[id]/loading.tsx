@@ -1,10 +1,11 @@
-import { Skeleton } from "@/components/ui/skeleton"
+import { Skeleton } from "@/components/ui/skeleton";
 
 export default function ProductDetailsLoader() {
   return (
     <div className="lg:flex lg:items-center lg:justify-center lg:w-[80%] lg:m-auto">
       <div className="container mx-auto px-4 py-4 dark:bg-gray-900">
         <div className="grid md:grid-cols-2 gap-6">
+          {/* Product Images */}
           <div className="space-y-4">
             <Skeleton className="aspect-square w-full rounded-lg" />
             <div className="flex space-x-2 overflow-x-auto">
@@ -13,6 +14,8 @@ export default function ProductDetailsLoader() {
               ))}
             </div>
           </div>
+
+          {/* Product Details */}
           <div className="space-y-4">
             <div>
               <Skeleton className="h-8 w-3/4 mb-2" />
@@ -48,8 +51,28 @@ export default function ProductDetailsLoader() {
             </div>
           </div>
         </div>
+
+        {/* Review Section Loader */}
+        <div className="mt-12 space-y-6">
+          <Skeleton className="h-8 w-1/3" />
+          <div className="space-y-4">
+            {/* Rating Stars */}
+            <Skeleton className="h-6 w-1/4" />
+            <div className="flex space-x-2">
+              {[...Array(5)].map((_, i) => (
+                <Skeleton key={i} className="h-6 w-6 rounded-full" />
+              ))}
+            </div>
+
+            {/* Textarea Loader */}
+            <Skeleton className="h-6 w-1/4" />
+            <Skeleton className="h-32 w-full rounded-md" />
+
+            {/* Submit Button */}
+            <Skeleton className="h-10 w-32 rounded-md" />
+          </div>
+        </div>
       </div>
     </div>
-  )
+  );
 }
-
