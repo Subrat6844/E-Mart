@@ -26,7 +26,7 @@ export default function Checkout() {
     setStep(step - 1)
   }
 
-  const updateFormData = (key: 'address' | 'paymentMethod', value: any) => {
+  const updateFormData = (key: 'address' | 'paymentMethod', value: Address|string) => {
     setFormData({ ...formData, [key]: value })
   }
 

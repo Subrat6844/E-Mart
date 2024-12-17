@@ -49,12 +49,6 @@ export default function Navbar() {
 		return cart.items.reduce((total, item) => total + item.quantity, 0);
 	};
 
-	const handleSearch = (e: React.FormEvent) => {
-		e.preventDefault();
-		console.log("submit", searchText);
-		setSearchText("");
-		setIsSearchOpen(false);
-	};
 
 	if (pathname.startsWith("/dashboard")) {
 		return null;

@@ -26,7 +26,7 @@ export default function ProductListing() {
   const [isFilterModalOpen, setIsFilterModalOpen] = useState(false)
 
   const filteredAndSortedProducts = useMemo(() => {
-    let result = products.filter(
+    const result = products.filter(
       (product) =>
         product.name.toLowerCase().includes(searchTerm.toLowerCase()) &&
         (selectedCategory === "All" ||

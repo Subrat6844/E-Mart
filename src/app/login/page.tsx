@@ -6,7 +6,7 @@ import * as z from 'zod'
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 
 const loginSchema = z.object({
@@ -31,7 +31,7 @@ export default function Login() {
     try {
       // Here you would typically make an API call to authenticate the user
       console.log('Login data:', data)
-    } catch (err) {
+    } catch (_err) {
       setError('Invalid email or password. Please try again.')
     }
   }

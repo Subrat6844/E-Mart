@@ -50,7 +50,7 @@ export async function POST(req: Request) {
 	}
 }
 
-export async function GET(_req: Request) {
+export async function GET() {
 	try {
 		await dbConnect();
 		const session = await getServerSession();

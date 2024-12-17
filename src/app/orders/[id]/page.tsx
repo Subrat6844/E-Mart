@@ -20,6 +20,7 @@ import {
 } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
 import { useSession } from "next-auth/react";
+import Image from "next/image";
 
 interface Review {
 	_id: string;
@@ -49,6 +50,7 @@ export default function OrderDetailsPage({
 	const [products, setProducts] = useState<ProductWithReview[]>([]);
 	const { toast } = useToast();
 	const { data: session } = useSession();
+	const userId: string | undefined = session?.user._id;
 
 	useEffect(() => {
 		const fetchOrder = async () => {
@@ -63,7 +65,7 @@ export default function OrderDetailsPage({
 				const productsWithReviews = await Promise.all(
 					foundOrder.items.map(async (item) => {
 						const response = await fetch(
-							`/api/reviews/${item.product._id}/${session?.user._id}`
+							`/api/reviews/${item.product._id}/${userId}`
 						);
 						const data = await response.json();
 						const review =
@@ -254,7 +256,7 @@ export default function OrderDetailsPage({
 										className="flex justify-between items-center border-b pb-4 last:border-b-0"
 									>
 										<div className="flex items-center space-x-4">
-											<img
+											<Image
 												src={item.product.images[0]}
 												alt={item.product.name}
 												className="w-16 h-16 object-cover rounded"

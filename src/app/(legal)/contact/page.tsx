@@ -12,7 +12,7 @@ export default function ContactUs() {
   return (
     <div className="space-y-6">
       <h1 className="text-3xl font-bold">Contact Us</h1>
-      <p>We'd love to hear from you. Please fill out the form below or use our contact information.</p>
+      <p>We&rsquo;d love to hear from you. Please fill out the form below or use our contact information.</p>
       
       <form className="space-y-4">
         <div>

@@ -51,9 +51,8 @@ export default function Signup() {
 
 	const onSubmit = async (data: SignupForm) => {
 		try {
-			// Here you would typically make an API call to create the user
 			console.log("Signup data:", data);
-		} catch (err) {
+		} catch (_err) {
 			setError("An error occurred during signup. Please try again.");
 		}
 	};

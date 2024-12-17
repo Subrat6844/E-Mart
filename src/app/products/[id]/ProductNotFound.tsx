@@ -8,7 +8,7 @@ export default function ProductNotFound() {
       <PackageX className="h-16 w-16 text-muted-foreground mb-4" />
       <h1 className="text-2xl font-bold mb-2">Product Not Found</h1>
       <p className="text-muted-foreground mb-4 text-center">
-        We're sorry, but the product you're looking for doesn't exist or has been removed.
+        We&apos;re sorry, but the product you&apos;re looking for doesn&apos;t exist or has been removed.
       </p>
       <Button asChild>
         <Link href="/products">

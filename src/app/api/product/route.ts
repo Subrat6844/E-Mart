@@ -6,7 +6,7 @@ import CategoryModel from "@/models/Category";
 import { v2 as cloudinary } from "cloudinary";
 import { Session } from "next-auth";
 
-export async function GET(_req: Request) {
+export async function GET() {
 	try {
 		await dbConnect();
 		const products = await ProductModel.find().populate("category");
@@ -43,7 +43,7 @@ export async function POST(req: Request) {
     const { name, description, sku, category, price, images, status, variants } = await req.json();
 
     // Get the current user session
-    const session = await getServerSession();
+    const session:Session|null = await getServerSession();
     const isAdmin = session?.user.role === "admin";
 
     // Authorization check

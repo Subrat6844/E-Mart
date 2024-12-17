@@ -26,8 +26,8 @@ export async function POST(req: Request) {
 			{ message: "Password reset successful" },
 			{ status: 200 }
 		);
-	} catch (err: any) {
+	} catch (err) {
 		console.log("Error while setting new password", err);
-		return NextResponse.json({ message: err.message }, { status: 500 });
+		return NextResponse.json({ message:"Something went wrong" }, { status: 500 });
 	}
 }

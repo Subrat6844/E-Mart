@@ -173,10 +173,10 @@ export async function PATCH(
 			{ message: "Product updated successfully", product: updatedProduct },
 			{ status: 200 }
 		);
-	} catch (error: any) {
+	} catch (error) {
 		console.error("Error updating product", error);
 		return NextResponse.json(
-			{ message: error.message || "Error updating product" },
+			{ message:"Error updating product" },
 			{ status: 500 }
 		);
 	}

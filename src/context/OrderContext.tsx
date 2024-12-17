@@ -77,7 +77,7 @@ const orderReducer = (state: OrderState, action: OrderAction): OrderState => {
 				orders: state.orders.filter((order) => order._id !== action.payload),
 			};
 		default:
-			throw new Error(`Unhandled action type: ${(action as any).type}`);
+			throw new Error(`Unhandled action type: ${(action as { type: string }).type}`);
 	}
 };
 

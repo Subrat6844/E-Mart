@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { OrderSkeleton } from "./OrderSkeleton";
 import Link from "next/link";
+import Image from "next/image";
 
 export default function OrdersPage() {
 	const { state, dispatch } = useOrder();
@@ -89,7 +90,7 @@ export default function OrdersPage() {
 			<h1 className="text-3xl font-bold mb-6">Your Orders</h1>
 			{state.orders.length === 0 ? (
 				<p className="text-xl text-center">
-					You haven't placed any orders yet.
+					You haven&apos;t placed any orders yet.
 				</p>
 			) : (
 				state.orders.map((order) => (
@@ -132,7 +133,7 @@ export default function OrdersPage() {
 										className="flex items-center justify-between py-2 border-b last:border-b-0"
 									>
 										<div className="flex items-center">
-											<img
+											<Image
 												src={item.product.images[0]}
 												alt={item.product.name}
 												className="w-16 h-16 object-cover rounded mr-4"

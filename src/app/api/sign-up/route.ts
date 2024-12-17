@@ -39,7 +39,7 @@ export async function POST(req: Request) {
 			role: "customer",
 		});
 		return NextResponse.json(
-			{ message: "User created successfully" },
+			{ message: "User created successfully",user },
 			{ status: 201 }
 		);
 	} catch (error) {

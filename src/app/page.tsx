@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import ProductCard from "@/commonComponents/ProductCard";
 import { useProduct } from "../context/ProductContext";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 
 export default function Home() {
   const { products } = useProduct();
@@ -17,7 +18,7 @@ export default function Home() {
       <section className="relative py-20 overflow-hidden">
         <div className="absolute inset-0 z-0">
           <div className="absolute inset-0 bg-gradient-to-r from-gray-900 to-gray-800 opacity-70"></div>
-          <img
+          <Image
             src="https://img.freepik.com/free-photo/coquettish-lovely-cheerful-pretty-redhead-woman-with-blue-eyes-freckles-wearing-white-large-head_1258-132705.jpg?t=st=1734418479~exp=1734422079~hmac=a66b56a2cdc45bd08ca9cf6d396b30af6ee8048c7648045402c7066e7813fcf1&w=1380"
             alt="Luxury items"
             className="w-full h-full object-cover"
