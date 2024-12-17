@@ -185,7 +185,7 @@ export default function AddProductPage() {
           />
           <div>
             <h3 className="mb-4 text-lg font-medium">Variants</h3>
-            {variants.map((variant, index) => (
+            {variants.map((_variant, index) => (
               <div key={index} className="mb-4 flex space-x-4">
                 <FormField
                   control={form.control}

@@ -24,7 +24,6 @@ export default function AddressSection({ onAddressSelect }: AddressSectionProps)
   const handleNewAddressSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     const address: Address = {
-      _id: `${savedAddresses.length + 1}`,
       ...newAddress as Address,
     }
     setSelectedAddressId(address._id)

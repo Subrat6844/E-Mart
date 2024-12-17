@@ -110,7 +110,6 @@ const initialOrders = [
 		createdAt: "2024-12-01T12:00:00Z",
 		updatedAt: "2024-12-01T12:00:00Z",
 	},
-	// Add more dummy orders here...
 ];
 
 async function updateOrderAPI(
@@ -141,7 +140,6 @@ export default function OrdersPage() {
 	const [currentPage, setCurrentPage] = useState(1);
 	const [orders, setOrders] = useState(initialOrders);
 	const [isUpdating, setIsUpdating] = useState(false);
-	const router = useRouter();
 	const ordersPerPage = 10;
 	const totalPages = Math.ceil(orders.length / ordersPerPage);
 

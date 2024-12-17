@@ -4,7 +4,7 @@ import CategoryModel from "@/models/Category";
 import ProductModel from "@/models/Product";
 
 export async function GET(
-	req: Request,
+	_req: Request,
 	{ params }: { params: { id: string } }
 ) {
 	try {
@@ -59,7 +59,7 @@ export async function PATCH(
 }
 
 export async function DELETE(
-	req: Request,
+	_req: Request,
 	{ params }: { params: { id: string } }
 ) {
 	try {

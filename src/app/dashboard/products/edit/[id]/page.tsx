@@ -8,8 +8,8 @@ import { Button } from '@/components/ui/button'
 import {
   Form,
   FormControl,
-  FormDescription,
-  FormField,FormItem,
+  FormField,
+  FormItem,
   FormLabel,
   FormMessage,
 } from '@/components/ui/form'
@@ -24,20 +24,13 @@ import {
 } from '@/components/ui/select'
 import { useRouter } from 'next/navigation'
 
+// Define Product Schema with Zod
 const productSchema = z.object({
-  name: z.string().min(2, {
-    message: 'Name must be at least 2 characters.',
-  }),
+  name: z.string().min(2, { message: 'Name must be at least 2 characters.' }),
   description: z.string().optional(),
-  sku: z.string().min(1, {
-    message: 'SKU is required.',
-  }),
-  category: z.string().min(1, {
-    message: 'Category is required.',
-  }),
-  price: z.number().min(0, {
-    message: 'Price must be a positive number.',
-  }),
+  sku: z.string().min(1, { message: 'SKU is required.' }),
+  category: z.string().min(1, { message: 'Category is required.' }),
+  price: z.number().min(0, { message: 'Price must be a positive number.' }),
   status: z.enum(['active', 'inactive']),
   variants: z.array(
     z.object({
@@ -48,12 +41,19 @@ const productSchema = z.object({
   images: z.array(z.instanceof(File)).optional(),
 })
 
+// Type derived from Zod Schema
+export type ProductType = z.infer<typeof productSchema>
+
+// Main Component
 export default function EditProductPage({ params }: { params: { id: string } }) {
   const router = useRouter()
-  const [product, setProduct] = useState<z.infer<typeof productSchema> | null>(null)
-  const [variants, setVariants] = useState([{ size: '', stock: 0 }])
 
-  const form = useForm<z.infer<typeof productSchema>>({
+  // State for fetched product and variants
+  const [product, setProduct] = useState<ProductType | null>(null)
+  const [variants, setVariants] = useState<ProductType['variants']>([])
+
+  // Initialize React Hook Form
+  const form = useForm<ProductType>({
     resolver: zodResolver(productSchema),
     defaultValues: {
       name: '',
@@ -67,13 +67,10 @@ export default function EditProductPage({ params }: { params: { id: string } }) 
     },
   })
 
+  // Fetch Product Data
   useEffect(() => {
-    // Fetch product data based on the ID
-    // This is a mock fetch, replace with actual API call
     const fetchProduct = async () => {
-      // Simulating API call
-      const response = await new Promise(resolve => setTimeout(() => resolve({
-        id: params.id,
+      const response: ProductType = {
         name: 'Sample Product',
         description: 'This is a sample product description',
         sku: 'SAMPLE001',
@@ -81,38 +78,38 @@ export default function EditProductPage({ params }: { params: { id: string } }) 
         price: 99.99,
         status: 'active',
         variants: [{ size: 'M', stock: 50 }],
-      }), 1000))
-      
-      setProduct(response as z.infer<typeof productSchema>)
-      form.reset(response as z.infer<typeof productSchema>)
+        images: [],
+      }
+
+      setProduct(response)
+      form.reset(response) // Reset form with fetched data
       setVariants(response.variants)
     }
 
     fetchProduct()
   }, [params.id, form])
 
-  function onSubmit(values: z.infer<typeof productSchema>) {
+  // Form Submit Handler
+  function onSubmit(values: ProductType) {
     console.log(values)
-    // Here you would typically send this data to your API
     alert('Product updated successfully!')
     router.push('/dashboard/products/list')
   }
 
+  // Add New Variant
   const addVariant = () => {
     setVariants([...variants, { size: '', stock: 0 }])
   }
 
-  if (!product) {
-    return <div>Loading...</div>
-  }
+  if (!product) return <div>Loading...</div>
 
   return (
     <div className="flex-1 space-y-4 p-8 pt-6">
-      <div className="flex items-center justify-between space-y-2">
-        <h2 className="text-3xl font-bold tracking-tight">Edit Product</h2>
-      </div>
+      <h2 className="text-3xl font-bold tracking-tight">Edit Product</h2>
+
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+          {/* Name Field */}
           <FormField
             control={form.control}
             name="name"
@@ -126,6 +123,8 @@ export default function EditProductPage({ params }: { params: { id: string } }) 
               </FormItem>
             )}
           />
+
+          {/* Description Field */}
           <FormField
             control={form.control}
             name="description"
@@ -133,16 +132,14 @@ export default function EditProductPage({ params }: { params: { id: string } }) 
               <FormItem>
                 <FormLabel>Description</FormLabel>
                 <FormControl>
-                  <Textarea
-                    placeholder="Product description"
-                    className="resize-none"
-                    {...field}
-                  />
+                  <Textarea placeholder="Product description" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
             )}
           />
+
+          {/* SKU Field */}
           <FormField
             control={form.control}
             name="sku"
@@ -156,6 +153,8 @@ export default function EditProductPage({ params }: { params: { id: string } }) 
               </FormItem>
             )}
           />
+
+          {/* Category Field */}
           <FormField
             control={form.control}
             name="category"
@@ -178,6 +177,8 @@ export default function EditProductPage({ params }: { params: { id: string } }) 
               </FormItem>
             )}
           />
+
+          {/* Price Field */}
           <FormField
             control={form.control}
             name="price"
@@ -185,47 +186,30 @@ export default function EditProductPage({ params }: { params: { id: string } }) 
               <FormItem>
                 <FormLabel>Price</FormLabel>
                 <FormControl>
-                  <Input type="number" placeholder="0.00" {...field} onChange={e => field.onChange(+e.target.value)} />
+                  <Input
+                    type="number"
+                    placeholder="0.00"
+                    {...field}
+                    onChange={(e) => field.onChange(+e.target.value)}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
             )}
           />
-          <FormField
-            control={form.control}
-            name="status"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Status</FormLabel>
-                <Select onValueChange={field.onChange} defaultValue={field.value}>
-                  <FormControl>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select a status" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    <SelectItem value="active">Active</SelectItem>
-                    <SelectItem value="inactive">Inactive</SelectItem>
-                  </SelectContent>
-                </Select>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+
+          {/* Variants Section */}
           <div>
-            <h3 className="mb-4 text-lg font-medium">Variants</h3>
+            <h3 className="text-lg font-medium mb-4">Variants</h3>
             {variants.map((variant, index) => (
-              <div key={index} className="mb-4 flex space-x-4">
+              <div key={index} className="flex space-x-4 mb-4">
                 <FormField
                   control={form.control}
                   name={`variants.${index}.size`}
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Size</FormLabel>
-                      <FormControl>
-                        <Input placeholder="Size" {...field} />
-                      </FormControl>
-                      <FormMessage />
+                      <Input placeholder="Size" {...field} />
                     </FormItem>
                   )}
                 />
@@ -235,47 +219,25 @@ export default function EditProductPage({ params }: { params: { id: string } }) 
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Stock</FormLabel>
-                      <FormControl>
-                        <Input type="number" placeholder="0" {...field} onChange={e => field.onChange(+e.target.value)} />
-                      </FormControl>
-                      <FormMessage />
+                      <Input
+                        type="number"
+                        placeholder="0"
+                        {...field}
+                        onChange={(e) => field.onChange(+e.target.value)}
+                      />
                     </FormItem>
                   )}
                 />
               </div>
             ))}
-            <Button type="button" variant="outline" onClick={addVariant}>
+            <Button type="button" onClick={addVariant} variant="outline">
               Add Variant
             </Button>
           </div>
-          <FormField
-            control={form.control}
-            name="images"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Images</FormLabel>
-                <FormControl>
-                  <Input
-                    type="file"
-                    multiple
-                    accept="image/*"
-                    onChange={(e) => {
-                      const files = Array.from(e.target.files || []);
-                      field.onChange(files);
-                    }}
-                  />
-                </FormControl>
-                <FormDescription>
-                  Upload one or more product images.
-                </FormDescription>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+
           <Button type="submit">Update Product</Button>
         </form>
       </Form>
     </div>
   )
 }
-

@@ -5,7 +5,7 @@ import { getServerSession } from "next-auth";
 import { NextResponse } from "next/server";
 
 export async function GET(
-	req: Request,
+	_req: Request,
 	{ params }: { params: { id: string } }
 ) {
 	try {
@@ -97,7 +97,7 @@ export async function PATCH(
 }
 
 export async function DELETE(
-	req: Request,
+	_req: Request,
 	{ params }: { params: { id: string } }
 ) {
 	try {

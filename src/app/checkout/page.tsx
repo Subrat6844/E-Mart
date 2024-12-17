@@ -35,7 +35,7 @@ export default function Checkout() {
       case 1:
         return formData.address !== null
       case 2:
-        return true // Order summary is always complete
+        return true 
       case 3:
         return formData.paymentMethod !== null
       default:

@@ -6,7 +6,7 @@ import CategoryModel from "@/models/Category";
 import { v2 as cloudinary } from "cloudinary";
 import { Session } from "next-auth";
 
-export async function GET(req: Request) {
+export async function GET(_req: Request) {
 	try {
 		await dbConnect();
 		const products = await ProductModel.find().populate("category");

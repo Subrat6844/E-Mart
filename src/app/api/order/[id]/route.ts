@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 import OrderModel from "@/models/Order";
 import { getServerSession } from "next-auth";
 export async function GET(
-	req: Request,
+	_req: Request,
 	{ params }: { params: { id: string } }
 ) {
 	try {
@@ -109,7 +109,7 @@ export async function PATCH(
 }
 
 export async function DELETE(
-	req: Request,
+	_req: Request,
 	{ params }: { params: { id: string } }
 ) {
 	try {

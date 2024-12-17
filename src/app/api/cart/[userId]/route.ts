@@ -3,7 +3,7 @@ import CartModel from "@/models/Cart";
 import { getServerSession } from "next-auth";
 import { NextResponse } from "next/server";
 export async function GET(
-	req: Request,
+	_req: Request,
 	{ params }: { params: { userId: string } }
 ) {
 	try {
@@ -35,7 +35,7 @@ export async function GET(
 }
 
 export async function DELETE(
-	req: Request,
+	_req: Request,
 	{ params }: { params: { userId: string } }
 ) {
 	try {

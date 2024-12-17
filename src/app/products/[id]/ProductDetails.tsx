@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, use } from "react";
+import { useState, useMemo } from "react";
 import Image from "next/image";
 import { Star, ShoppingCart, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";

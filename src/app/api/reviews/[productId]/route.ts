@@ -5,7 +5,7 @@ import ProductModel from "@/models/Product";
 import { getServerSession } from "next-auth";
 
 export async function GET(
-	req: Request,
+	_req: Request,
 	{ params }: { params: { productId: string } }
 ) {
 	try {
@@ -92,7 +92,7 @@ export async function POST(
 	}
 }
 export async function DELETE(
-	req: Request,
+	_req: Request,
 	{ params }: { params: { productId: string } }
 ) {
 	try {

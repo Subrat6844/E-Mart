@@ -10,7 +10,7 @@ cloudinary.config({
 	api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 export async function GET(
-	req: NextRequest,
+	_req: NextRequest,
 	{ params }: { params: { id: string } }
 ) {
 	try {
@@ -36,7 +36,7 @@ export async function GET(
 }
 
 export async function DELETE(
-	req: NextRequest,
+	_req: NextRequest,
 	{ params }: { params: { id: string } }
 ) {
 	try {

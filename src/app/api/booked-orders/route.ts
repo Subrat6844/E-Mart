@@ -3,7 +3,7 @@ import OrderModel from "@/models/Order";
 import { getServerSession } from "next-auth";
 import { NextResponse } from "next/server";
 
-export async function GET(req: Request) {
+export async function GET(_req: Request) {
 	try {
 		// Connect to the database
 		await dbConnect();

@@ -3,9 +3,7 @@ import { AppSidebar } from '@/components/Sidebar'
 interface DashboardShellProps extends React.HTMLAttributes<HTMLDivElement> {}
 
 export default function DashboardShell({
-  children,
-  className,
-  ...props
+  children
 }: DashboardShellProps) {
   return (
     <div className="flex h-screen overflow-hidden">
