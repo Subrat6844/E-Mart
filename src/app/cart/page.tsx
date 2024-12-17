@@ -77,6 +77,7 @@ export default function CartPage() {
 								</div>
 								<div className="flex items-center gap-2">
 									<Button
+										disabled={item.quantity === 1}
 										variant="outline"
 										size="icon"
 										onClick={() =>
