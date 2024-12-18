@@ -24,7 +24,7 @@ import Link from 'next/link'
 // Dummy data for products
 const initialProducts = [
   {
-    id: '1',
+    _id: '1',
     name: 'T-shirt',
     sku: 'TSH001',
     category: 'Clothing',
@@ -34,7 +34,7 @@ const initialProducts = [
     reviewCount: 10,
   },
   {
-    id: '2',
+    _id: '2',
     name: 'Smartphone',
     sku: 'SPH001',
     category: 'Electronics',
@@ -49,7 +49,7 @@ export default function ProductsListPage() {
   const [products, setProducts] = useState(initialProducts)
 
   const handleDeleteProduct = (id: string) => {
-    setProducts(products.filter(product => product.id !== id))
+    setProducts(products.filter(product => product._id !== id))
   }
 
   return (
@@ -76,7 +76,7 @@ export default function ProductsListPage() {
           </TableHeader>
           <TableBody>
             {products.map((product) => (
-              <TableRow key={product.id}>
+              <TableRow key={product._id}>
                 <TableCell className="font-medium">{product.name}</TableCell>
                 <TableCell>{product.sku}</TableCell>
                 <TableCell>{product.category}</TableCell>
@@ -95,13 +95,13 @@ export default function ProductsListPage() {
                     <DropdownMenuContent align="end">
                       <DropdownMenuLabel>Actions</DropdownMenuLabel>
                       <DropdownMenuItem>
-                        <Link href={`/dashboard/products/edit/${product.id}`} className="flex items-center">
+                        <Link href={`/dashboard/products/edit/${product._id}`} className="flex items-center">
                           <Pencil className="mr-2 h-4 w-4" />
                           <span>Edit</span>
                         </Link>
                       </DropdownMenuItem>
                       <DropdownMenuSeparator />
-                      <DropdownMenuItem onClick={() => handleDeleteProduct(product.id)}>
+                      <DropdownMenuItem onClick={() => handleDeleteProduct(product._id)}>
                         <Trash className="mr-2 h-4 w-4" />
                         <span>Delete</span>
                       </DropdownMenuItem>
