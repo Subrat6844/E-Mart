@@ -10,7 +10,7 @@ export async function GET() {
 	try {
 		await dbConnect();
 		const products = await ProductModel.find().populate("category");
-		if (!products) {
+		if (!products || products.length === 0) {
 			return NextResponse.json(
 				{ message: "No Products Found" },
 				{ status: 404 }
