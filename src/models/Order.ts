@@ -25,6 +25,10 @@ interface Order extends Document {
 	paymentProvider: string;
 	paymentTransactionId: string;
 	total: number;
+	subtotal: number;
+	discountAmount: number;
+	coupon?: Types.ObjectId;
+	couponCode?: string;
 	address: Types.ObjectId;
 	items: OrderItem[];
 	createdAt: Date;
@@ -46,7 +50,11 @@ const OrderSchema = new Schema<Order>(
 		},
 		paymentProvider: { type: String }, // e.g., Stripe, PayPal
 		paymentTransactionId: { type: String }, // ID from the payment gateway
-		total: { type: Number, required: true },
+		subtotal: { type: Number, required: true }, // Price before discount
+		discountAmount: { type: Number, default: 0 }, // Discount amount from coupon
+		total: { type: Number, required: true }, // Final price after discount
+		coupon: { type: Schema.Types.ObjectId, ref: "Coupon" }, // Reference to the coupon used
+		couponCode: { type: String }, // Store the coupon code for reference
 		address: { type: Schema.Types.ObjectId, ref: "Address", required: true },
 		items: [OrderItemSchema], // Embedded OrderItem schema
 	},

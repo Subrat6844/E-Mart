@@ -1,6 +1,6 @@
 import mongoose, { Document, Schema } from "mongoose";
 
-interface Cart extends Document {
+export interface Cart extends Document {
 	user: mongoose.Types.ObjectId;
 	items: CartItem[];
 	createdAt: Date;
