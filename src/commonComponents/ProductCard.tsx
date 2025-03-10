@@ -18,10 +18,10 @@ export default function ProductCard({ product }: { product: Product }) {
     variants,
   } = product;
 
-  const isOutOfStock = variants.every((v) => v.stock === 0);
+  const isOutOfStock = variants?.every((v) => v.stock === 0);
 
   return (
-    <Link href={`/products/${product._id}`}>
+    <Link href={`/products/${product?._id}`}>
       <Card className="overflow-hidden transition-all duration-300 hover:shadow-md h-full">
         <div className="relative aspect-square overflow-hidden">
           <Image
@@ -40,7 +40,7 @@ export default function ProductCard({ product }: { product: Product }) {
         </div>
         <CardContent className="p-3">
           <div className="text-xs text-muted-foreground mb-1">
-            {category.name}
+            {category?.name}
           </div>
           <h2 className="text-base font-semibold text-foreground mb-1 line-clamp-1">
             {name}
@@ -50,7 +50,7 @@ export default function ProductCard({ product }: { product: Product }) {
           </p>
           <div className="flex justify-between items-center">
             <span className="text-lg font-bold text-foreground">
-              ₹{price.toFixed(2)}
+              ₹{price?.toFixed(2)}
             </span>
             <div className="flex items-center">
               {[...Array(5)].map((_, i) => (
